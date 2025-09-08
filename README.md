@@ -83,5 +83,5 @@ Chave encontrada no Edifício João Calvino!
 
 ## Alunos:
  - João Vitor Garcia Aguiar Mintz
- - Giovanni 
- - Yan Andreotti
+ - Giovanni Barreto Garitano de Castro 
+ - Yan Andreotti dos Santos

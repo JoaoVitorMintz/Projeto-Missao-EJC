@@ -45,6 +45,7 @@ int main () {
 }
 
 void construirMatriz(int linhas, int colunas, char** v) {
+    printf("Escreva cada andar seguindo o seguinte exemplo: H H H V H H (Dando os espaços entre as salas):\n\n");
     for (int i = 0; i < linhas; i++) {   // Preenche do térreo até o último andar
         if (i == 0 ) {
             printf("Térreo: ");

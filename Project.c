@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void construirMatriz(int linhas, int colunas, char** v);
 

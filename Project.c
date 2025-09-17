@@ -93,18 +93,22 @@ void construirMatriz(int linhas, int colunas, char** v) {
 
 
 int procurar(int posLinhas, int posColunas, char** v,  int tamLinha, int tamColuna) {
+    
     // Condições de parada (0 para caso de sucesso e 1 para falha ao buscar a chave)
-    if (v[posLinhas][posColunas] == '*') return 0;
     if (posLinhas < 0 || posLinhas >= tamLinha || posColunas < 0 || posColunas >= tamColuna) return 1;
-
+    if (v[posLinhas][posColunas] == '*') return 0;
+    if (v[posLinhas][posColunas] == 'X') return 1; //Evita revisitar posições já visitadas (prevenção de loop infinito)
+     
+    char atual = v[posLinhas][posColunas];
+    v[posLinhas][posColunas] = 'X'; //Marca posição como visitada para não voltar nela depois
 
     // Verificação da letra e realiza a chama recursiva com base na letra
-    if (v[posLinhas][posColunas] == 'H') {
-       if (procurar(posLinhas + 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;
-       if (procurar(posLinhas - 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;
-    } else if (v[posLinhas][posColunas] == 'V') {
-        if (procurar(posLinhas, posColunas + 1, v, tamLinha, tamColuna) == 0) return 0;
-        if (procurar(posLinhas, posColunas - 1, v, tamLinha, tamColuna) == 0) return 0;
+    if (atual == 'H') {
+       if (procurar(posLinhas, posColunas + 1, v, tamLinha, tamColuna) == 0) return 0;//direita
+       if (procurar(posLinhas, posColunas - 1, v, tamLinha, tamColuna) == 0) return 0;//esquerda
+    } else if (atual == 'V') {
+        if (procurar(posLinhas + 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//sobe
+        if (procurar(posLinhas - 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//desce
     }
 
     return 1;

@@ -2,48 +2,55 @@
 #include <stdlib.h>
 #include <string.h>
 
-void construirMatriz(int linhas, int colunas, char** v);
 int procurar(int posLinhas, int posColunas, char** v, int tamLinha, int tamColuna);
 
 // TODO: REALIZAR OS TESTES!
 
 int main () {
-    int n, m, posLinha, posColuna; // n são as linhas (andares) e m são as colunas (quantidade de quartos);
+    int n, m, posLinha, posColuna; // n são as linhas (andares) e m são as colunas (quantidade de quartos), posição da linha e coluna;
+    FILE *entrada;
+    char buffer[200];
 
-    printf("Indique o número de andares do prédio: ");
-    scanf("%d", &n);
-    printf("Indique o número de salas por andar: ");
-    scanf("%d", &m);
+    // Abertura do arquivo:
+    entrada = fopen("arquivo.txt", "r");
+
+    if (entrada == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return 1;
+    }
+
+    fscanf(entrada, "%d", &n);
+
 
     // Alocando memória para construção da matriz:
     char **v = malloc(n * sizeof(char *));
     if (v == NULL) {
         perror("Erro ao alocar memória das linhas");
         return 1;
-    } 
+    }
 
+    // Construção da matriz:
     for (int i = 0; i < n; i++) {
-        v[i] = malloc((m + 1) * sizeof(char));
+        fscanf(entrada, "%s", buffer);
+        m = strlen(buffer); // Comprimento da linha (quantidade de quartos)
+        v[i] = malloc((m+1) * sizeof(char));
         if (v[i] == NULL) {
             perror("Erro ao alocar memória das colunas");
             return 1;
         }
+        strcpy(v[i], buffer);
     }
-    
 
-    construirMatriz(n, m, v);
-
-    printf("\nIndique o andar em que começará a porcurar: ");
-    scanf("%d", &posLinha);
-    printf("\nIndique a posição da sala que começará a procurar: ");
-    scanf("%d", &posColuna);
+    fscanf(entrada, "%d %d", &posLinha, &posColuna); // Posição inicial
 
     // Apresentando a matriz inserida pelo usuário;
     printf("%d\n", n);
-    for (int i = n - 1; i >= 0; i--) {
+    for (int i = 0; i < n; i++) {
         printf("%s\n", v[i]);
     }
     printf("%d  %d\n", posLinha, posColuna);
+
+    fclose(entrada);
 
     int resposta = procurar(posLinha, posColuna, v, n, m);
 
@@ -60,37 +67,6 @@ int main () {
     return 0;
 }
 
-void construirMatriz(int linhas, int colunas, char** v) {
-    printf("Escreva cada andar seguindo o seguinte exemplo: H H H V H H (Dando os espaços entre as salas):\n\n");
-    for (int i = 0; i < linhas; i++) {   // Preenche do térreo até o último andar
-        if (i == 0 ) {
-            printf("Térreo: ");
-        } else {
-            printf("%d° andar: ", i);
-        }
-        for (int j = 0; j < colunas; j++) {
-            char entrada[20];
-            while (1) {
-                scanf("%s", entrada);
-
-                if (strcmp(entrada, "H") == 0 || strcmp(entrada, "h") == 0) {
-                    v[i][j] = 'H';
-                    break;
-                } else if (strcmp(entrada, "V") == 0 || strcmp(entrada, "v") == 0) {
-                    v[i][j] = 'V';
-                    break;
-                } else if (strcmp(entrada, "*") == 0) {
-                    v[i][j] = '*';
-                    break;
-                } else {
-                    printf("ERRO: ENTRADA INVÁLIDA (apenas H, V ou *). Digite novamente: ");
-                }
-            }
-        }
-        v[i][colunas] = '\0';
-    }
-}
-
 
 int procurar(int posLinhas, int posColunas, char** v,  int tamLinha, int tamColuna) {
     
@@ -104,11 +80,11 @@ int procurar(int posLinhas, int posColunas, char** v,  int tamLinha, int tamColu
 
     // Verificação da letra e realiza a chama recursiva com base na letra
     if (atual == 'H') {
-       if (procurar(posLinhas, posColunas + 1, v, tamLinha, tamColuna) == 0) return 0;//direita
-       if (procurar(posLinhas, posColunas - 1, v, tamLinha, tamColuna) == 0) return 0;//esquerda
+       if (procurar(posLinhas + 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//cima
+       if (procurar(posLinhas - 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//baixo
     } else if (atual == 'V') {
-        if (procurar(posLinhas + 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//sobe
-        if (procurar(posLinhas - 1, posColunas, v, tamLinha, tamColuna) == 0) return 0;//desce
+        if (procurar(posLinhas, posColunas + 1, v, tamLinha, tamColuna) == 0) return 0;//direita
+        if (procurar(posLinhas, posColunas - 1, v, tamLinha, tamColuna) == 0) return 0;//esquerda
     }
 
     return 1;
